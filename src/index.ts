@@ -5,20 +5,23 @@ import {
   PendantNecklace,
 } from "./jewellery";
 
-type StorageHandler = (
+type LeafStorageHandler = (
   storage: JewelleryStorage,
   item: Necklace | PendantNecklace,
 ) => void;
 
-const safeHandler =
-  (storage: JewelleryStorage, item: Necklace | PendantNecklace) =>
-    (nextHandler: StorageHandler) => {
-      if (item.stone !== "Diamond") {
-        return nextHandler(storage, item);
-      }
+type StorageHandler = (
+  storage: JewelleryStorage,
+  item: Necklace | PendantNecklace,
+) => (nextHandler: StorageHandler | LeafStorageHandler) => void;
 
-      storage.safe.push(item);
-    };
+const safeHandler: StorageHandler = (storage, item) => (nextHandler) => {
+  if (item.stone !== "Diamond") {
+    return nextHandler(storage, item);
+  }
+
+  storage.safe.push(item);
+};
 
 export function packNecklace(
   item: Necklace | PendantNecklace,
