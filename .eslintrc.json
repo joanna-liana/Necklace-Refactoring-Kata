@@ -1,5 +1,8 @@
 {
   "extends": [
     "plugin:@cazoo/eslint/node"
-  ]
+  ],
+  "rules": {
+    "prettier/prettier": ["error", { "endOfLine": "off" }]
+  }
 }
