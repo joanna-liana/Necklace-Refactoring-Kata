@@ -78,6 +78,15 @@ describe("The packer", () => {
         expect(storage.box.topShelf[0]).toStrictEqual(smallItem);
       });
 
+      it("a small diamond item", () => {
+        const smallItem = makeRing("Diamond");
+        storage.travelRoll.push(smallItem);
+
+        pack(smallItem, storage);
+
+        expect(storage.box.topShelf[0]).toStrictEqual(smallItem);
+      });
+
       it("a large item", () => {
         const largeItem = makePendantNecklace(ANY_STONE, LARGE_TYPE);
         storage.travelRoll.push(largeItem);
@@ -85,98 +94,110 @@ describe("The packer", () => {
 
         pack(largeItem, storage);
 
+        expect(storage.box.topShelf[0]).not.toStrictEqual(largeItem);
+        expect(storage.travelRoll).toHaveLength(0);
+      });
+
+      it("a large diamond item", () => {
+        const largeItem = makePendantNecklace('Diamond', LARGE_TYPE);
+        storage.travelRoll.push(largeItem);
+        expect(storage.travelRoll[0]).toStrictEqual(largeItem);
+
+        pack(largeItem, storage);
+
+        expect(storage.box.topShelf[0]).not.toStrictEqual(largeItem);
         expect(storage.travelRoll).toHaveLength(0);
       });
     });
+  });
 
-    it("with diamond", () => {
-      const smallItem = makeRing("Diamond");
+  it("with diamond", () => {
+    const smallItem = makeRing("Diamond");
+
+    pack(smallItem, storage);
+
+    expect(storage.safe[0]).toStrictEqual(smallItem);
+  });
+
+  describe("with other stones", () => {
+    it("a small item", () => {
+      const smallItem = makeRing(ANY_STONE);
 
       pack(smallItem, storage);
 
-      expect(storage.safe[0]).toStrictEqual(smallItem);
+      expect(storage.box.topShelf[0]).toStrictEqual(smallItem);
     });
 
-    describe("with other stones", () => {
-      it("a small item", () => {
-        const smallItem = makeRing(ANY_STONE);
+    describe("a large item", () => {
+      describe("earring", () => {
+        it("of type hoop", () => {
+          const item = makeEarring(ANY_STONE, "Hoop");
 
-        pack(smallItem, storage);
+          pack(item, storage);
 
-        expect(storage.box.topShelf[0]).toStrictEqual(smallItem);
-      });
+          expect(storage.tree[0]).toStrictEqual(item);
+        })
 
-      describe("a large item", () => {
-        describe("earring", () => {
-          it("of type hoop", () => {
-            const item = makeEarring(ANY_STONE, "Hoop");
-
-            pack(item, storage);
-
-            expect(storage.tree[0]).toStrictEqual(item);
-          })
-
-          describe("of type drop", () => {
-            it.each(["Amber", "Pearl"])
-              ("with a non-plain stone", (nonPlainStone: Jewel) => {
-                const item = makeEarring(nonPlainStone, "Drop");
-
-                pack(item, storage);
-
-                expect(storage.box.topShelf[0]).toStrictEqual(item);
-              });
-
-            it("with stone", () => {
-              const item = makeEarring("Plain", "Drop");
+        describe("of type drop", () => {
+          it.each(["Amber", "Pearl"])
+            ("with a non-plain stone", (nonPlainStone: Jewel) => {
+              const item = makeEarring(nonPlainStone, "Drop");
 
               pack(item, storage);
 
-              expect(storage.box.mainSection[0]).toStrictEqual(item);
+              expect(storage.box.topShelf[0]).toStrictEqual(item);
             });
-          })
 
-          it("of type stud", () => {
-            const item = makeEarring(ANY_STONE, "Stud");
+          it("with stone", () => {
+            const item = makeEarring("Plain", "Drop");
 
             pack(item, storage);
 
-            expect(storage.box.topShelf[0]).toStrictEqual(item);
-          })
+            expect(storage.box.mainSection[0]).toStrictEqual(item);
+          });
         })
 
-        describe("necklace", () => {
-          it("with a pendant", () => {
-            const item = makePendantNecklace(ANY_STONE, LARGE_TYPE);
+        it("of type stud", () => {
+          const item = makeEarring(ANY_STONE, "Stud");
 
-            pack(item, storage);
+          pack(item, storage);
 
-            expect(storage.tree[0]).toStrictEqual(item.chain);
-            expect(storage.box.topShelf[0]).toStrictEqual(item.pendant);
-          })
-
-          it("without a pendant", () => {
-            const item = makeNecklace(ANY_STONE, LARGE_TYPE);
-
-            pack(item, storage);
-
-            expect(storage.tree[0]).toStrictEqual(item);
-          })
-        })
-
-        describe("unknown large item", () => {
-          it("with a pendant", () => {
-            const item = {
-              _kind: "Unknown",
-              size: () => "Large",
-              stone: ANY_STONE,
-            } as unknown as Jewellery;
-
-            pack(item, storage);
-
-            expect(storage.dresserTop[0]).toStrictEqual(item);
-          })
+          expect(storage.box.topShelf[0]).toStrictEqual(item);
         })
       })
-    });
-  })
+
+      describe("necklace", () => {
+        it("with a pendant", () => {
+          const item = makePendantNecklace(ANY_STONE, LARGE_TYPE);
+
+          pack(item, storage);
+
+          expect(storage.tree[0]).toStrictEqual(item.chain);
+          expect(storage.box.topShelf[0]).toStrictEqual(item.pendant);
+        })
+
+        it("without a pendant", () => {
+          const item = makeNecklace(ANY_STONE, LARGE_TYPE);
+
+          pack(item, storage);
+
+          expect(storage.tree[0]).toStrictEqual(item);
+        })
+      })
+
+      describe("unknown large item", () => {
+        it("with a pendant", () => {
+          const item = {
+            _kind: "Unknown",
+            size: () => "Large",
+            stone: ANY_STONE,
+          } as unknown as Jewellery;
+
+          pack(item, storage);
+
+          expect(storage.dresserTop[0]).toStrictEqual(item);
+        })
+      })
+    })
+  });
 });

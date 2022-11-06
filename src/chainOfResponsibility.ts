@@ -10,6 +10,8 @@ export enum Result {
   // TODO: later Failure can be added to enhance error reporting
 }
 
+type ShouldContinueChain = boolean;
+
 export type LeafStorageHandler = (
   storage: JewelleryStorage,
   item: Necklace | PendantNecklace
