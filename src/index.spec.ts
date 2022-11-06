@@ -1,4 +1,4 @@
-import { makeStorage, packNecklace } from ".";
+import { makeStorage, pack, packNecklace } from ".";
 import {
   JewelleryStorage,
   makeNecklace,
@@ -8,6 +8,10 @@ import {
 
 describe("The packer", () => {
   const ANY_STONE = "Amber";
+
+  const LARGE_TYPE = "Beads";
+  const SMALL_TYPE = "Chain";
+  const ANY_TYPE = SMALL_TYPE;
 
   let storage: JewelleryStorage;
 
@@ -21,8 +25,7 @@ describe("The packer", () => {
   });
 
   describe("when packing a necklace", () => {
-    const SMALL_TYPE = "Chain";
-    const ANY_TYPE = SMALL_TYPE;
+
 
     it("with diamond", () => {
       const necklace = makeNecklace("Diamond", ANY_TYPE);
@@ -42,8 +45,6 @@ describe("The packer", () => {
       });
 
       describe("large", () => {
-        const LARGE_TYPE = "Beads";
-
         it("pendant", () => {
           const necklace = makePendantNecklace(ANY_STONE, LARGE_TYPE);
 
@@ -63,4 +64,28 @@ describe("The packer", () => {
       });
     });
   });
+
+  describe("when packing a jewellery item", () => {
+
+    describe("given the travel roll already includes an item", () => {
+      it("a small item", () => {
+        const smallItem = makeRing(ANY_STONE);
+        storage.travelRoll.push(smallItem);
+
+        pack(smallItem, storage);
+
+        expect(storage.box.topShelf[0]).toStrictEqual(smallItem);
+      });
+
+      it("a large item", () => {
+        const largeItem = makePendantNecklace(ANY_STONE, LARGE_TYPE);
+        storage.travelRoll.push(largeItem);
+        expect(storage.travelRoll[0]).toStrictEqual(largeItem);
+
+        pack(largeItem, storage);
+
+        expect(storage.travelRoll).toHaveLength(0);
+      });
+    })
+  })
 });
