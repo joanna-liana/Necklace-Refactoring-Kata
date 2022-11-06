@@ -4,33 +4,8 @@ import {
   Necklace,
   PendantNecklace,
 } from "./jewellery";
+import { StorageHandler, Result, LeafStorageHandler, chain } from './chainOfResponsibility';
 
-enum Result {
-  Success = 'Success',
-  Skipped = 'Skipped'
-  // TODO: later Failure can be added to enhance error reporting
-}
-
-type LeafStorageHandler = (
-  storage: JewelleryStorage,
-  item: Necklace | PendantNecklace,
-) => Result;
-
-type StorageHandler = (
-  storage: JewelleryStorage,
-  item: Necklace | PendantNecklace,
-) => Result;
-
-
-const chain = (currentHandler: StorageHandler, nextHandler: StorageHandler): StorageHandler => (...args) => {
-  const result = currentHandler(...args);
-
-  if (result === Result.Skipped) {
-    return nextHandler(...args);
-  }
-
-  return result;
-};
 const topShelfHandler: StorageHandler = (storage, item) => {
   if (item.size() === "Small") {
     storage.box.topShelf.push(item);
