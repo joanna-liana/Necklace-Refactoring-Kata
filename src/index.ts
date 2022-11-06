@@ -38,8 +38,11 @@ const topShelfHandler: StorageHandler = (storage, item) => {
     return Result.Success;
   }
 
+  // TODO: this path skips futher processing of the necklace
+  // even though just the pendant has been stored
   if (item.type === "Pendant") {
     storage.box.topShelf.push(item.pendant);
+
     return Result.Success;
   }
 
