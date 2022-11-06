@@ -1,4 +1,5 @@
 import {
+  Jewellery,
   JewelleryStorage,
   Necklace,
   PendantNecklace
@@ -14,7 +15,7 @@ type ShouldContinueChain = boolean;
 
 export type StorageHandler = (
   storage: JewelleryStorage,
-  item: Necklace | PendantNecklace
+  item: Jewellery
 ) => Result;
 
 export const chain = (currentHandler: StorageHandler, nextHandler: StorageHandler): StorageHandler => (...args) => {
