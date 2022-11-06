@@ -1,4 +1,4 @@
-type Jewel = "Plain" | "Diamond" | "Pearl" | "Amber";
+export type Jewel = "Plain" | "Diamond" | "Pearl" | "Amber";
 type EarringType = "Stud" | "Hoop" | "Drop";
 type NecklaceType = "Beads" | "Chain" | "LongChain";
 type JewelleryType = "Ring" | "Earring" | "Necklace" | "Pendant";

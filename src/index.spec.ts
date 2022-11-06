@@ -1,5 +1,6 @@
 import { makeStorage, pack, packNecklace } from ".";
 import {
+  Jewel,
   JewelleryStorage,
   makeEarring,
   makeNecklace,
@@ -114,6 +115,25 @@ describe("The packer", () => {
             pack(item, storage);
 
             expect(storage.tree[0]).toStrictEqual(item);
+          })
+
+          describe("of type drop", () => {
+            it.each(["Amber", "Pearl"])
+              ("with a non-plain stone", (nonPlainStone: Jewel) => {
+                const item = makeEarring(nonPlainStone, "Drop");
+
+                pack(item, storage);
+
+                expect(storage.box.topShelf[0]).toStrictEqual(item);
+              });
+
+            it("with stone", () => {
+              const item = makeEarring("Plain", "Drop");
+
+              pack(item, storage);
+
+              expect(storage.box.mainSection[0]).toStrictEqual(item);
+            });
           })
         })
       })
