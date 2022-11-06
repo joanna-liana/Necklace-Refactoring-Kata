@@ -6,50 +6,6 @@ import {
 } from "./jewellery";
 import { StorageHandler, Result, chain } from './chainOfResponsibility';
 
-const topShelfHandler: StorageHandler = (storage, item) => {
-  if (item.size() === "Small") {
-    storage.box.topShelf.push(item);
-
-    return Result.Success;
-  }
-
-  // TODO: maybe the handler should not be concerned with item type
-  // storing each part of the jewellery could be the responsibility of
-  // a higher-level component
-  storage.box.topShelf.push((item as PendantNecklace).pendant);
-
-  // TODO: temp fix; the result is not accurate
-  // the handler was successful, but the pendant is only partially stored;
-  return Result.Skipped;
-};
-
-const treeHandler: StorageHandler = (storage, item) => {
-  const thingToStore = (item as Necklace | PendantNecklace).type === "Pendant" ? (item as PendantNecklace).chain : item;
-
-  storage.tree.push(thingToStore);
-
-  return Result.Success
-}
-
-const safeHandler: StorageHandler = (storage, item) => {
-  if (item.stone !== "Diamond") {
-    return Result.Skipped;
-  }
-
-  storage.safe.push(item);
-
-  return Result.Success;
-};
-
-export function packNecklace(
-  item: Necklace | PendantNecklace,
-  storage: JewelleryStorage
-) {
-  const lastInChain = chain(topShelfHandler, treeHandler);
-  const chainRoot = chain(safeHandler, lastInChain);
-
-  chainRoot(storage, item);
-}
 
 const packTopShelf: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
   if (storage.travelRoll.includes(item) && item.size() !== "Large") {
@@ -141,6 +97,13 @@ export function pack(item: Jewellery, storage: JewelleryStorage) {
   const chainRoot = chain(packTopShelf, next1);
 
   return chainRoot(storage, item);
+}
+
+export function packNecklace(
+  item: Necklace | PendantNecklace,
+  storage: JewelleryStorage
+) {
+  return pack(item, storage)
 }
 
 export function makeStorage(): JewelleryStorage {
