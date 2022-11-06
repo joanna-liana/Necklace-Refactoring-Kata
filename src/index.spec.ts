@@ -136,6 +136,25 @@ describe("The packer", () => {
             });
           })
         })
+
+        describe("necklace", () => {
+          it("with a pendant", () => {
+            const item = makePendantNecklace(ANY_STONE, LARGE_TYPE);
+
+            pack(item, storage);
+
+            expect(storage.tree[0]).toStrictEqual(item.chain);
+            expect(storage.box.topShelf[0]).toStrictEqual(item.pendant);
+          })
+
+          it("without a pendant", () => {
+            const item = makeNecklace(ANY_STONE, LARGE_TYPE);
+
+            pack(item, storage);
+
+            expect(storage.tree[0]).toStrictEqual(item);
+          })
+        })
       })
     });
   })
