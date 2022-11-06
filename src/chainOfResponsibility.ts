@@ -1,29 +1,24 @@
 import {
   Jewellery,
-  JewelleryStorage,
-  Necklace,
-  PendantNecklace
+  JewelleryStorage
 } from "./jewellery";
 
-export enum Result {
-  Success = 'Success',
-  Skipped = 'Skipped'
-  // TODO: later Failure can be added to enhance error reporting
-}
+export type ShouldContinueChain = boolean;
 
-type ShouldContinueChain = boolean;
+export const ContinueChain = true;
+export const BreakChain = false;
 
 export type StorageHandler = (
   storage: JewelleryStorage,
   item: Jewellery
-) => Result;
+) => ShouldContinueChain;
 
 export const chain = (currentHandler: StorageHandler, nextHandler: StorageHandler): StorageHandler => (...args) => {
-  const result = currentHandler(...args);
+  const shouldContinueChain = currentHandler(...args);
 
-  if (result === Result.Skipped) {
+  if (shouldContinueChain) {
     return nextHandler(...args);
   }
 
-  return result;
+  return shouldContinueChain;
 };

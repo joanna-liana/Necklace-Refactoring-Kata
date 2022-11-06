@@ -4,89 +4,81 @@ import {
   Necklace,
   PendantNecklace,
 } from "./jewellery";
-import { StorageHandler, Result, chain } from './chainOfResponsibility';
+import { StorageHandler, chain, BreakChain, ContinueChain } from './chainOfResponsibility';
 
 
 const packTopShelf: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
   if (storage.travelRoll.includes(item) && item.size() !== "Large") {
     storage.box.topShelf.push(item);
 
-    return Result.Success;
+    return BreakChain;
   }
 
   if (item.size() === "Small" || item._kind === "Earring" && item.type !== "Hoop" && item.stone !== "Plain") {
     storage.box.topShelf.push(item);
 
-    // TODO: temp fix; the result is not accurate
-    // the handler was successful, but the item is only partially stored;
-    return Result.Skipped;
+    return ContinueChain;
   }
 
   if (item._kind === "Necklace" && item.type === "Pendant") {
     storage.box.topShelf.push(item.pendant);
 
-    // TODO: temp fix; the result is not accurate
-    // the handler was successful, but the item is only partially stored;
-    return Result.Skipped;
+    return ContinueChain;
   }
 
-  return Result.Skipped;
+  return ContinueChain;
 }
 
 const packSafe: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
   if (item.stone !== "Diamond") {
-    return Result.Skipped;
+    return ContinueChain;
   }
 
   storage.safe.push(item);
 
-  return Result.Success;
+  return BreakChain;
 }
 
 const packTree: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
   if (item._kind === "Earring" && item.type === "Hoop") {
     storage.tree.push(item);
 
-    return Result.Success;
+    return BreakChain;
   } else if (item._kind === "Necklace") {
     if (item.type === "Pendant") {
       storage.tree.push(item.chain);
 
-      // TODO: temp fix; the result is not accurate
-      // the handler was successful, but the pendant is only partially stored;
-      return Result.Skipped;
+      return ContinueChain;
     } else {
       storage.tree.push(item);
 
-      return Result.Success;
+      return BreakChain;
     }
   }
 
-  return Result.Skipped;
+  return ContinueChain;
 }
 
 const packMainSection: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
   if (item._kind === "Earring" && item.stone === "Plain") {
     storage.box.mainSection.push(item);
 
-    return Result.Success;
+    return BreakChain;
   }
 
-  return Result.Skipped;
+  return ContinueChain;
 }
 
 const packDresserTop = (storage: JewelleryStorage, item: Jewellery) => {
   storage.dresserTop.push(item);
 
-  // TODO: temp fix; the result is not accurate
-  // the item was stored, but further handlers still need to be called;
-  return Result.Skipped;
+  return ContinueChain;
 }
 
 const packTravelRoll = (storage: JewelleryStorage, item: Jewellery) => {
   storage.travelRoll = storage.travelRoll.filter((x) => x !== item);
 
-  return Result.Success;
+  return BreakChain;
 }
 
 // TODO: defactor/refactor to make the CoR focused on item instead of storage
