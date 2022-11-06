@@ -89,9 +89,7 @@ const packSafe: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
 
 export function pack(item: Jewellery, storage: JewelleryStorage) {
   const baseHandler: StorageHandler = (storage, item) => {
-    if (item.stone === "Diamond") {
-      storage.safe.push(item);
-    } else if (item._kind === "Earring") {
+    if (item._kind === "Earring") {
       if (item.type === "Hoop") {
         storage.tree.push(item);
       } else if (item.stone === "Plain") {
