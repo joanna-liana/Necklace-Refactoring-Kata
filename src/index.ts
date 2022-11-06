@@ -61,12 +61,10 @@ export function pack(item: Jewellery, storage: JewelleryStorage) {
   } else if (item._kind === "Earring") {
     if (item.type === "Hoop") {
       storage.tree.push(item);
-    } else if (item.type === "Drop") {
-      if (item.stone === "Plain") {
-        storage.box.mainSection.push(item);
-      } else {
-        storage.box.topShelf.push(item);
-      }
+    } else if (item.stone === "Plain") {
+      storage.box.mainSection.push(item);
+    } else {
+      storage.box.topShelf.push(item);
     }
   } else if (item._kind === "Necklace") {
     if (item.type === "Pendant") {
