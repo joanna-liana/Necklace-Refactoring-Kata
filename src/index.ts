@@ -5,18 +5,35 @@ import {
   PendantNecklace,
 } from "./jewellery";
 
+enum Result {
+  Success = 'Success',
+  Skipped = 'Skipped'
+  // TODO: later Failure can be added to enhance error reporting
+}
+
 type LeafStorageHandler = (
   storage: JewelleryStorage,
   item: Necklace | PendantNecklace,
-) => void;
+) => Result;
 
 type StorageHandler = (
   storage: JewelleryStorage,
   item: Necklace | PendantNecklace,
-) => void;
+) => Result;
 
 type ChainableStorageHandler = (nextHandler: StorageHandler | LeafStorageHandler) => StorageHandler;
 
+
+
+const chain = (currentHandler: StorageHandler, nextHandler: StorageHandler): StorageHandler => (...args) => {
+  const result = currentHandler(...args);
+
+  if (result === Result.Skipped) {
+    return nextHandler(...args);
+  }
+
+  return result;
+};
 
 const safeHandler: ChainableStorageHandler = (nextHandler) => (storage, item) => {
   if (item.stone !== "Diamond") {
@@ -38,19 +55,50 @@ const topShelfHandler: ChainableStorageHandler = (nextHandler) => (storage, item
   return nextHandler(storage, item);
 };
 
+const treeHandler: LeafStorageHandler = (storage, item) => {
+  if (item.type === "Pendant") {
+    storage.tree.push(item.chain);
+  } else {
+    storage.tree.push(item);
+  }
+
+  return Result.Success
+}
+
+const topShelfHandlerV2: ChainableStorageHandler = (nextHandler) => (storage, item) => {
+  if (item.size() === "Small") {
+    storage.box.topShelf.push(item);
+  }
+
+  if (item.type === "Pendant") {
+    storage.box.topShelf.push(item.pendant);
+  }
+
+  return nextHandler(storage, item);
+};
+
+const safeHandlerV2: ChainableStorageHandler = (nextHandler) => (storage, item) => {
+  if (item.stone !== "Diamond") {
+    return nextHandler(storage, item);
+  }
+
+  storage.safe.push(item);
+};
+
+const treeHandlerV2: LeafStorageHandler = (storage, item) => {
+  if (item.type === "Pendant") {
+    storage.tree.push(item.chain);
+  } else {
+    storage.tree.push(item);
+  }
+
+  return Result.Success
+}
+
 export function packNecklace(
   item: Necklace | PendantNecklace,
   storage: JewelleryStorage
 ) {
-
-  const treeHandler: LeafStorageHandler = (storage, item) => {
-    if (item.type === "Pendant") {
-      storage.tree.push(item.chain);
-    } else {
-      storage.tree.push(item);
-    }
-  }
-
   const next1 = topShelfHandler(treeHandler);
   const chainRoot = safeHandler(next1);
 
