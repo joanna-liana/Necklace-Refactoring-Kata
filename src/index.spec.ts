@@ -68,7 +68,17 @@ describe("The packer", () => {
 
   describe("when packing a jewellery item", () => {
 
-    describe("given the travel roll already includes an item", () => {
+    describe("given the travel roll already includes the item to be stored", () => {
+      beforeEach(() => {
+        const anotherSmallItem = makeRing(ANY_STONE);
+        const anotherLargeItem = makePendantNecklace(ANY_STONE, LARGE_TYPE);
+
+        storage.travelRoll.push(anotherSmallItem);
+        storage.travelRoll.push(anotherLargeItem);
+
+        expect(storage.travelRoll).toHaveLength(2);
+      })
+
       it("a small item", () => {
         const smallItem = makeRing(ANY_STONE);
         storage.travelRoll.push(smallItem);
@@ -90,23 +100,23 @@ describe("The packer", () => {
       it("a large item", () => {
         const largeItem = makePendantNecklace(ANY_STONE, LARGE_TYPE);
         storage.travelRoll.push(largeItem);
-        expect(storage.travelRoll[0]).toStrictEqual(largeItem);
+        expect(storage.travelRoll).toHaveLength(3);
 
         pack(largeItem, storage);
 
         expect(storage.box.topShelf[0]).not.toStrictEqual(largeItem);
-        expect(storage.travelRoll).toHaveLength(0);
+        expect(storage.travelRoll).toHaveLength(2);
       });
 
       it("a large diamond item", () => {
         const largeItem = makePendantNecklace('Diamond', LARGE_TYPE);
         storage.travelRoll.push(largeItem);
-        expect(storage.travelRoll[0]).toStrictEqual(largeItem);
+        expect(storage.travelRoll).toHaveLength(3);
 
         pack(largeItem, storage);
 
         expect(storage.box.topShelf[0]).not.toStrictEqual(largeItem);
-        expect(storage.travelRoll).toHaveLength(0);
+        expect(storage.travelRoll).toHaveLength(2);
       });
     });
   });
