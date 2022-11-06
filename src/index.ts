@@ -43,7 +43,9 @@ const topShelfHandler: StorageHandler = (storage, item) => {
   if (item.type === "Pendant") {
     storage.box.topShelf.push(item.pendant);
 
-    return Result.Success;
+    // TODO: tmep fix; the result is not accurate
+    // the handler was successful, but the pendant is only partially stored;
+    return Result.Skipped;
   }
 
   return Result.Skipped;
