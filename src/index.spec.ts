@@ -86,6 +86,17 @@ describe("The packer", () => {
 
         expect(storage.travelRoll).toHaveLength(0);
       });
+    });
+
+    it("with diamond", () => {
+      const smallItem = makeRing("Diamond");
+
+      pack(smallItem, storage);
+
+      expect(storage.safe[0]).toStrictEqual(smallItem);
+    });
+        expect(storage.travelRoll).toHaveLength(0);
+      });
     })
   })
 });
