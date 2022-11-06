@@ -58,16 +58,17 @@ export function pack(item: Jewellery, storage: JewelleryStorage) {
     storage.safe.push(item);
   } else if (item.size() === "Small") {
     storage.box.topShelf.push(item);
-  } else if (item._kind === "Earring" && item.type === "Hoop") {
-    storage.tree.push(item);
-  } else if (
-    item._kind === "Earring" &&
-    item.type === "Drop" &&
-    item.stone !== "Plain"
-  ) {
-    storage.box.topShelf.push(item);
-  } else if (item._kind === "Earring" && item.type === "Drop") {
-    storage.box.mainSection.push(item);
+  } else if (item._kind === "Earring") {
+    if (item.type === "Hoop") {
+      storage.tree.push(item);
+    } else if (
+      item.type === "Drop" &&
+      item.stone !== "Plain"
+    ) {
+      storage.box.topShelf.push(item);
+    } else if (item.type === "Drop") {
+      storage.box.mainSection.push(item);
+    }
   } else if (item._kind === "Necklace" && item.type === "Pendant") {
     storage.tree.push(item.chain);
     storage.box.topShelf.push(item.pendant);
