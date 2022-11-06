@@ -135,6 +135,14 @@ describe("The packer", () => {
               expect(storage.box.mainSection[0]).toStrictEqual(item);
             });
           })
+
+          it("of type stud", () => {
+            const item = makeEarring(ANY_STONE, "Stud");
+
+            pack(item, storage);
+
+            expect(storage.box.topShelf[0]).toStrictEqual(item);
+          })
         })
 
         describe("necklace", () => {
