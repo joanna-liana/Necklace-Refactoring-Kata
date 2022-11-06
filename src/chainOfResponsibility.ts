@@ -12,11 +12,6 @@ export enum Result {
 
 type ShouldContinueChain = boolean;
 
-export type LeafStorageHandler = (
-  storage: JewelleryStorage,
-  item: Necklace | PendantNecklace
-) => Result;
-
 export type StorageHandler = (
   storage: JewelleryStorage,
   item: Necklace | PendantNecklace

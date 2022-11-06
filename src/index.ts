@@ -4,7 +4,7 @@ import {
   Necklace,
   PendantNecklace,
 } from "./jewellery";
-import { StorageHandler, Result, LeafStorageHandler, chain } from './chainOfResponsibility';
+import { StorageHandler, Result, chain } from './chainOfResponsibility';
 
 const topShelfHandler: StorageHandler = (storage, item) => {
   if (item.size() === "Small") {
@@ -23,7 +23,7 @@ const topShelfHandler: StorageHandler = (storage, item) => {
   return Result.Skipped;
 };
 
-const treeHandler: LeafStorageHandler = (storage, item) => {
+const treeHandler: StorageHandler = (storage, item) => {
   const thingToStore = item.type === "Pendant" ? item.chain : item;
 
   storage.tree.push(thingToStore);
