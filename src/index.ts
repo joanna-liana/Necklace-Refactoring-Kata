@@ -89,6 +89,7 @@ const packTravelRoll = (storage: JewelleryStorage, item: Jewellery) => {
   return Result.Success;
 }
 
+// TODO: defactor/refactor to make the CoR focused on item instead of storage
 export function pack(item: Jewellery, storage: JewelleryStorage) {
   const next4 = chain(packDresserTop, packTravelRoll);
   const next3 = chain(packMainSection, next4);
