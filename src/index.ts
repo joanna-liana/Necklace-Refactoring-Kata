@@ -27,11 +27,9 @@ const topShelfHandler: StorageHandler = (storage, item) => {
 };
 
 const treeHandler: LeafStorageHandler = (storage, item) => {
-  if (item.type === "Pendant") {
-    storage.tree.push(item.chain);
-  } else {
-    storage.tree.push(item);
-  }
+  const thingToStore = item.type === "Pendant" ? item.chain : item;
+
+  storage.tree.push(thingToStore);
 
   return Result.Success
 }
