@@ -95,8 +95,15 @@ describe("The packer", () => {
 
       expect(storage.safe[0]).toStrictEqual(smallItem);
     });
-        expect(storage.travelRoll).toHaveLength(0);
+
+    describe("with other stones", () => {
+      it("a small item", () => {
+        const smallItem = makeRing(ANY_STONE);
+
+        pack(smallItem, storage);
+
+        expect(storage.box.topShelf[0]).toStrictEqual(smallItem);
       });
-    })
+    });
   })
 });
