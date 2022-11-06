@@ -28,8 +28,6 @@ describe("The packer", () => {
   });
 
   describe("when packing a necklace", () => {
-
-
     it("with diamond", () => {
       const necklace = makeNecklace("Diamond", ANY_TYPE);
 

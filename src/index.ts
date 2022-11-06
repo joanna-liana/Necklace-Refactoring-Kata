@@ -13,16 +13,13 @@ const topShelfHandler: StorageHandler = (storage, item) => {
     return Result.Success;
   }
 
-  // TODO: this path skips futher processing of the necklace
-  // even though just the pendant has been stored
-  if (item.type === "Pendant") {
-    storage.box.topShelf.push(item.pendant);
+  // TODO: maybe the handler should not be concerned with item type
+  // storing each part of the jewellery could be the responsibility of
+  // a higher-level component
+  storage.box.topShelf.push((item as PendantNecklace).pendant);
 
-    // TODO: tmep fix; the result is not accurate
-    // the handler was successful, but the pendant is only partially stored;
-    return Result.Skipped;
-  }
-
+  // TODO: temp fix; the result is not accurate
+  // the handler was successful, but the pendant is only partially stored;
   return Result.Skipped;
 };
 
