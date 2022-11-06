@@ -1,6 +1,7 @@
 import { makeStorage, pack, packNecklace } from ".";
 import {
   JewelleryStorage,
+  makeEarring,
   makeNecklace,
   makePendantNecklace,
   makeRing,
@@ -104,6 +105,18 @@ describe("The packer", () => {
 
         expect(storage.box.topShelf[0]).toStrictEqual(smallItem);
       });
+
+      describe("a large item", () => {
+        describe("earring", () => {
+          it("of type hoop", () => {
+            const item = makeEarring(ANY_STONE, "Hoop");
+
+            pack(item, storage);
+
+            expect(storage.tree[0]).toStrictEqual(item);
+          })
+        })
+      })
     });
   })
 });
