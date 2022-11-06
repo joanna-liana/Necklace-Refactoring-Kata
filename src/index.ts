@@ -87,19 +87,33 @@ const packSafe: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
   return Result.Success;
 }
 
+const packTree: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
+  if (item._kind === "Earring" && item.type === "Hoop") {
+    storage.tree.push(item);
+
+    return Result.Success;
+  } else if (item._kind === "Necklace") {
+    if (item.type === "Pendant") {
+      storage.tree.push(item.chain);
+
+      // TODO: temp fix; the result is not accurate
+      // the handler was successful, but the pendant is only partially stored;
+      return Result.Skipped;
+    } else {
+      storage.tree.push(item);
+
+      return Result.Success;
+    }
+  }
+
+  return Result.Skipped;
+}
+
 export function pack(item: Jewellery, storage: JewelleryStorage) {
   const baseHandler: StorageHandler = (storage, item) => {
     if (item._kind === "Earring") {
-      if (item.type === "Hoop") {
-        storage.tree.push(item);
-      } else if (item.stone === "Plain") {
+      if (item.stone === "Plain") {
         storage.box.mainSection.push(item);
-      }
-    } else if (item._kind === "Necklace") {
-      if (item.type === "Pendant") {
-        storage.tree.push(item.chain);
-      } else {
-        storage.tree.push(item);
       }
     } else {
       storage.dresserTop.push(item);
@@ -110,39 +124,11 @@ export function pack(item: Jewellery, storage: JewelleryStorage) {
     return Result.Success;
   }
 
-  const next1 = chain(packSafe, baseHandler);
+  const next2 = chain(packTree, baseHandler);
+  const next1 = chain(packSafe, next2);
   const chainRoot = chain(packTopShelf, next1);
 
   return chainRoot(storage, item);
-}
-
-const packTree = (storage: JewelleryStorage, item: Jewellery) => {
-  if (storage.travelRoll.includes(item) && item.size() !== "Large")
-    storage.box.topShelf.push(item);
-  else if (item.stone === "Diamond") {
-    storage.safe.push(item);
-  } else if (item.size() === "Small") {
-    storage.box.topShelf.push(item);
-  } else if (item._kind === "Earring") {
-    if (item.type === "Hoop") {
-      storage.tree.push(item);
-    } else if (item.stone === "Plain") {
-      storage.box.mainSection.push(item);
-    } else {
-      storage.box.topShelf.push(item);
-    }
-  } else if (item._kind === "Necklace") {
-    if (item.type === "Pendant") {
-      storage.tree.push(item.chain);
-      storage.box.topShelf.push(item.pendant);
-    } else {
-      storage.tree.push(item);
-    }
-  } else {
-    storage.dresserTop.push(item);
-  }
-
-  storage.travelRoll = storage.travelRoll.filter((x) => x !== item);
 }
 
 const packMainSection = (storage: JewelleryStorage, item: Jewellery) => {
