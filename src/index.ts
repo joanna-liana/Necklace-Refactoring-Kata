@@ -68,11 +68,13 @@ export function pack(item: Jewellery, storage: JewelleryStorage) {
         storage.box.topShelf.push(item);
       }
     }
-  } else if (item._kind === "Necklace" && item.type === "Pendant") {
-    storage.tree.push(item.chain);
-    storage.box.topShelf.push(item.pendant);
   } else if (item._kind === "Necklace") {
-    storage.tree.push(item);
+    if (item.type === "Pendant") {
+      storage.tree.push(item.chain);
+      storage.box.topShelf.push(item.pendant);
+    } else {
+      storage.tree.push(item);
+    }
   } else {
     storage.dresserTop.push(item);
   }
