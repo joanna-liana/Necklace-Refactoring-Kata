@@ -24,7 +24,6 @@ type StorageHandler = (
 type ChainableStorageHandler = (nextHandler: StorageHandler | LeafStorageHandler) => StorageHandler;
 
 
-
 const chain = (currentHandler: StorageHandler, nextHandler: StorageHandler): StorageHandler => (...args) => {
   const result = currentHandler(...args);
 
@@ -65,42 +64,22 @@ const treeHandler: LeafStorageHandler = (storage, item) => {
   return Result.Success
 }
 
-const topShelfHandlerV2: ChainableStorageHandler = (nextHandler) => (storage, item) => {
-  if (item.size() === "Small") {
-    storage.box.topShelf.push(item);
-  }
-
-  if (item.type === "Pendant") {
-    storage.box.topShelf.push(item.pendant);
-  }
-
-  return nextHandler(storage, item);
-};
-
-const safeHandlerV2: ChainableStorageHandler = (nextHandler) => (storage, item) => {
+const safeHandlerV2: StorageHandler = (storage, item) => {
   if (item.stone !== "Diamond") {
-    return nextHandler(storage, item);
+    return Result.Skipped;
   }
 
   storage.safe.push(item);
+
+  return Result.Success;
 };
-
-const treeHandlerV2: LeafStorageHandler = (storage, item) => {
-  if (item.type === "Pendant") {
-    storage.tree.push(item.chain);
-  } else {
-    storage.tree.push(item);
-  }
-
-  return Result.Success
-}
 
 export function packNecklace(
   item: Necklace | PendantNecklace,
   storage: JewelleryStorage
 ) {
   const next1 = topShelfHandler(treeHandler);
-  const chainRoot = safeHandler(next1);
+  const chainRoot = chain(safeHandlerV2, next1);
 
   chainRoot(storage, item);
 }
