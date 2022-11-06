@@ -43,18 +43,15 @@ export function packNecklace(
   storage: JewelleryStorage
 ) {
 
-  const leaf: LeafStorageHandler = (storage, item) => {
-    if (item.size() !== "Large") {
-      storage.box.topShelf.push(item);
-    } else if (item.type === "Pendant") {
+  const treeHandler: LeafStorageHandler = (storage, item) => {
+    if (item.type === "Pendant") {
       storage.tree.push(item.chain);
-      storage.box.topShelf.push(item.pendant);
     } else {
       storage.tree.push(item);
     }
   }
 
-  const next1 = topShelfHandler(leaf);
+  const next1 = topShelfHandler(treeHandler);
   const chainRoot = safeHandler(next1);
 
   chainRoot(storage, item);
