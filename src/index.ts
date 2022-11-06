@@ -13,9 +13,12 @@ type LeafStorageHandler = (
 type StorageHandler = (
   storage: JewelleryStorage,
   item: Necklace | PendantNecklace,
-) => (nextHandler: StorageHandler | LeafStorageHandler) => void;
+) => void;
 
-const safeHandler: StorageHandler = (storage, item) => (nextHandler) => {
+type ChainableStorageHandler = (nextHandler: StorageHandler | LeafStorageHandler) => StorageHandler;
+
+
+const safeHandler: ChainableStorageHandler = (nextHandler) => (storage, item) => {
   if (item.stone !== "Diamond") {
     return nextHandler(storage, item);
   }
@@ -23,14 +26,24 @@ const safeHandler: StorageHandler = (storage, item) => (nextHandler) => {
   storage.safe.push(item);
 };
 
+const topShelfHandler: ChainableStorageHandler = (nextHandler) => (storage, item) => {
+  if (item.size() === "Small") {
+    storage.box.topShelf.push(item);
+  }
+
+  if (item.type === "Pendant") {
+    storage.box.topShelf.push(item.pendant);
+  }
+
+  return nextHandler(storage, item);
+};
+
 export function packNecklace(
   item: Necklace | PendantNecklace,
   storage: JewelleryStorage
 ) {
 
-  const chainRoot = safeHandler(storage, item);
-
-  chainRoot((storage, item) => {
+  const leaf: LeafStorageHandler = (storage, item) => {
     if (item.size() !== "Large") {
       storage.box.topShelf.push(item);
     } else if (item.type === "Pendant") {
@@ -39,7 +52,12 @@ export function packNecklace(
     } else {
       storage.tree.push(item);
     }
-  });
+  }
+
+  const next1 = topShelfHandler(leaf);
+  const chainRoot = safeHandler(next1);
+
+  chainRoot(storage, item);
 }
 
 export function pack(item: Jewellery, storage: JewelleryStorage) {
