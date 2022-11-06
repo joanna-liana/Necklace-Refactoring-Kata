@@ -1,6 +1,7 @@
 import { makeStorage, pack, packNecklace } from ".";
 import {
   Jewel,
+  Jewellery,
   JewelleryStorage,
   makeEarring,
   makeNecklace,
@@ -161,6 +162,20 @@ describe("The packer", () => {
             pack(item, storage);
 
             expect(storage.tree[0]).toStrictEqual(item);
+          })
+        })
+
+        describe("unknown large item", () => {
+          it("with a pendant", () => {
+            const item = {
+              _kind: "Unknown",
+              size: () => "Large",
+              stone: ANY_STONE,
+            } as unknown as Jewellery;
+
+            pack(item, storage);
+
+            expect(storage.dresserTop[0]).toStrictEqual(item);
           })
         })
       })
