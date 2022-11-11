@@ -8,7 +8,7 @@ import {
 import { BreakChain, ContinueChain, StorageHandler, buildChain, executeChain } from './chainOfResponsibility';
 
 
-const smallItemsV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
+const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: (_storage, item) => {
     return item.size() === "Small"
   },
@@ -23,7 +23,7 @@ const smallItemsV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery
   }
 });
 
-const earringsV2: StorageHandler = (storage: JewelleryStorage, item: Earring) => ({
+const earrings: StorageHandler = (storage: JewelleryStorage, item: Earring) => ({
   shouldExecute: (_storage, item) => {
     return item._kind === "Earring"
   },
@@ -46,7 +46,7 @@ const earringsV2: StorageHandler = (storage: JewelleryStorage, item: Earring) =>
   }
 });
 
-const necklacesV2: StorageHandler = (storage: JewelleryStorage, item: Necklace | PendantNecklace) => ({
+const necklaces: StorageHandler = (storage: JewelleryStorage, item: Necklace | PendantNecklace) => ({
   shouldExecute: (_storage, item) => {
     return item._kind === "Necklace"
   },
@@ -62,7 +62,7 @@ const necklacesV2: StorageHandler = (storage: JewelleryStorage, item: Necklace |
   }
 })
 
-const diamondsV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
+const diamonds: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: (_storage, item) => {
     return item.stone === "Diamond"
   },
@@ -73,7 +73,7 @@ const diamondsV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery) 
   }
 })
 
-const packDresserTopV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
+const packDresserTop: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: () => true,
   exec: () => {
     storage.dresserTop.push(item);
@@ -82,7 +82,7 @@ const packDresserTopV2: StorageHandler = (storage: JewelleryStorage, item: Jewel
   }
 })
 
-const packTravelRollV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
+const packTravelRoll: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: () => true,
   exec: () => {
     storage.travelRoll = storage.travelRoll.filter((x) => x !== item);
@@ -93,7 +93,7 @@ const packTravelRollV2: StorageHandler = (storage: JewelleryStorage, item: Jewel
 
 export function pack(item: Jewellery, storage: JewelleryStorage) {
   executeChain(
-    buildChain([smallItemsV2, earringsV2, necklacesV2, diamondsV2, packDresserTopV2, packTravelRollV2])(storage, item)
+    buildChain([smallItems, earrings, necklaces, diamonds, packDresserTop, packTravelRoll])(storage, item)
   );
 
   return;
