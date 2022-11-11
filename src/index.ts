@@ -38,18 +38,15 @@ const earrings: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
 }
 
 const necklaces: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item._kind === "Necklace" && item.type === "Pendant") {
-    storage.box.topShelf.push(item.pendant);
+  if (item._kind !== "Necklace") {
+    return ContinueChain;
   }
 
-  if (item._kind === "Necklace") {
-    if (item.type === "Pendant") {
-      storage.tree.push(item.chain);
-
-      return ContinueChain;
-    } else {
-      storage.tree.push(item);
-    }
+  if (item.type === "Pendant") {
+    storage.box.topShelf.push(item.pendant);
+    storage.tree.push(item.chain);
+  } else {
+    storage.tree.push(item);
   }
 
   return ContinueChain;
