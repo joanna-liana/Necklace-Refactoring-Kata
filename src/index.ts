@@ -58,6 +58,22 @@ const necklaces: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =
   return ContinueChain;
 }
 
+const necklacesV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Necklace | PendantNecklace) => ({
+  shouldExecute: (_storage, item) => {
+    return item._kind === "Necklace"
+  },
+  exec: () => {
+    if (item.type === "Pendant") {
+      storage.box.topShelf.push(item.pendant);
+      storage.tree.push(item.chain);
+    } else {
+      storage.tree.push(item);
+    }
+
+    return ContinueChain;
+  }
+})
+
 const diamondsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: (_storage, item) => {
     return item.stone === "Diamond"
@@ -91,13 +107,13 @@ const packTravelRollV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jew
 export function pack(item: Jewellery, storage: JewelleryStorage) {
   const chainRoot = chain(
     smallItems,
-    chain(earrings, necklaces)
+    earrings
   );
 
   chainRoot(storage, item);
 
   executeChain(
-    buildChain([diamondsV2, packDresserTopV2, packTravelRollV2])(storage, item)
+    buildChain([necklacesV2, diamondsV2, packDresserTopV2, packTravelRollV2])(storage, item)
   );
 
   return;
