@@ -86,6 +86,7 @@ describe("The packer", () => {
         pack(smallItem, storage);
 
         expect(storage.box.topShelf[0]).toStrictEqual(smallItem);
+        expect(storage.box.topShelf).toHaveLength(1);
       });
 
       it("a small diamond item", () => {
@@ -95,6 +96,7 @@ describe("The packer", () => {
         pack(smallItem, storage);
 
         expect(storage.box.topShelf[0]).toStrictEqual(smallItem);
+        expect(storage.box.topShelf).toHaveLength(1);
       });
 
       it("a large item", () => {
@@ -105,6 +107,7 @@ describe("The packer", () => {
         pack(largeItem, storage);
 
         expect(storage.box.topShelf[0]).not.toStrictEqual(largeItem);
+        expect(storage.box.topShelf).toHaveLength(1);
         expect(storage.travelRoll).toHaveLength(2);
       });
 
@@ -116,6 +119,7 @@ describe("The packer", () => {
         pack(largeItem, storage);
 
         expect(storage.box.topShelf[0]).not.toStrictEqual(largeItem);
+        expect(storage.box.topShelf).toHaveLength(1);
         expect(storage.travelRoll).toHaveLength(2);
       });
     });

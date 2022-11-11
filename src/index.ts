@@ -2,94 +2,35 @@ import {
   Jewellery,
   JewelleryStorage,
   Necklace,
-  PendantNecklace,
+  PendantNecklace
 } from "./jewellery";
-import { StorageHandler, chain, BreakChain, ContinueChain } from './chainOfResponsibility';
+import { buildChain, executeChain } from './chainOfResponsibility/chainOfResponsibility';
+import { smallItems } from './chainOfResponsibility/handlers/items/smallItems';
+import { earrings } from './chainOfResponsibility/handlers/items/earrings';
+import { necklaces } from './chainOfResponsibility/handlers/items/necklaces';
+import { diamonds } from './chainOfResponsibility/handlers/items/diamonds';
+import { packDresserTop } from './chainOfResponsibility/handlers/storage/packDresserTop';
+import { packTravelRoll } from './chainOfResponsibility/handlers/storage/packTravelRoll';
 
 
-const packTopShelf: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (storage.travelRoll.includes(item) && item.size() !== "Large") {
-    storage.box.topShelf.push(item);
-
-    return BreakChain;
-  }
-
-  if (item.size() === "Small" || item._kind === "Earring" && item.type !== "Hoop" && item.stone !== "Plain") {
-    storage.box.topShelf.push(item);
-
-    return ContinueChain;
-  }
-
-  if (item._kind === "Necklace" && item.type === "Pendant") {
-    storage.box.topShelf.push(item.pendant);
-
-    return ContinueChain;
-  }
-
-  return ContinueChain;
-}
-
-const packSafe: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item.stone !== "Diamond") {
-    return ContinueChain;
-  }
-
-  storage.safe.push(item);
-
-  return BreakChain;
-}
-
-const packTree: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item._kind === "Earring" && item.type === "Hoop") {
-    storage.tree.push(item);
-
-    return BreakChain;
-  } else if (item._kind === "Necklace") {
-    if (item.type === "Pendant") {
-      storage.tree.push(item.chain);
-
-      return ContinueChain;
-    } else {
-      storage.tree.push(item);
-
-      return BreakChain;
-    }
-  }
-
-  return ContinueChain;
-}
-
-const packMainSection: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item._kind === "Earring" && item.stone === "Plain") {
-    storage.box.mainSection.push(item);
-
-    return BreakChain;
-  }
-
-  return ContinueChain;
-}
-
-const packDresserTop = (storage: JewelleryStorage, item: Jewellery) => {
-  storage.dresserTop.push(item);
-
-  return ContinueChain;
-}
-
-const packTravelRoll = (storage: JewelleryStorage, item: Jewellery) => {
-  storage.travelRoll = storage.travelRoll.filter((x) => x !== item);
-
-  return BreakChain;
-}
-
-// TODO: defactor/refactor to make the CoR focused on item instead of storage
 export function pack(item: Jewellery, storage: JewelleryStorage) {
-  const next4 = chain(packDresserTop, packTravelRoll);
-  const next3 = chain(packMainSection, next4);
-  const next2 = chain(packTree, next3);
-  const next1 = chain(packSafe, next2);
-  const chainRoot = chain(packTopShelf, next1);
+  const itemHandlers = [
+    smallItems,
+    earrings,
+    necklaces,
+    diamonds,
+  ];
 
-  return chainRoot(storage, item);
+  const storageHandlers = [
+    packDresserTop,
+    packTravelRoll
+  ];
+
+  executeChain(
+    buildChain([...itemHandlers, ...storageHandlers])(storage, item)
+  );
+
+  return;
 }
 
 export function packNecklace(
