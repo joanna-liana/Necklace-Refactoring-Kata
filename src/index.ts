@@ -5,7 +5,7 @@ import {
   PendantNecklace,
   Earring
 } from "./jewellery";
-import { BreakChain, ContinueChain, StorageHandler, buildChain, executeChain } from './chainOfResponsibility';
+import { BreakChain, ContinueChain, StorageHandler, buildChain, executeChain } from './chainOfResponsibility/chainOfResponsibility';
 
 
 const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({

@@ -1,7 +1,7 @@
 import {
   Jewellery,
   JewelleryStorage
-} from "./jewellery";
+} from "../jewellery";
 
 export type ShouldContinueChain = boolean;
 
