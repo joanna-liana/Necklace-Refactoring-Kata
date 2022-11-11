@@ -95,11 +95,23 @@ const packTravelRoll = (storage: JewelleryStorage, item: Jewellery) => {
 
 // TODO: defactor/refactor to make the CoR focused on item instead of storage
 export function pack(item: Jewellery, storage: JewelleryStorage) {
-  const next4 = chain(packDresserTop, packTravelRoll);
-  const next3 = chain(packMainSection, next4);
-  const next2 = chain(packTree, next3);
-  const next1 = chain(diamonds, next2);
-  const chainRoot = chain(chain(smallItems, chain(earrings, necklaces)), next1);
+  const next4 = ;
+  const chainRoot = chain(
+    chain(
+      smallItems,
+      chain(earrings, necklaces)
+    ),
+    chain(
+      diamonds,
+      chain(
+        packTree,
+        chain(
+          packMainSection,
+          chain(packDresserTop, packTravelRoll)
+        )
+      )
+    )
+  );
 
   return chainRoot(storage, item);
 }
