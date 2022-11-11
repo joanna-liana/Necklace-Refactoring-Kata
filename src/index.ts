@@ -58,19 +58,9 @@ const necklaces: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =
   return ContinueChain;
 }
 
-const diamonds: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item.stone !== "Diamond") {
-    return ContinueChain;
-  }
-
-  storage.safe.push(item);
-
-  return BreakChain;
-}
-
 const diamondsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: (_storage, item) => {
-    return item.stone !== "Diamond"
+    return item.stone === "Diamond"
   },
   exec: () => {
     storage.safe.push(item);
@@ -100,17 +90,14 @@ const packTravelRollV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jew
 // TODO: defactor/refactor to make the CoR focused on item instead of storage
 export function pack(item: Jewellery, storage: JewelleryStorage) {
   const chainRoot = chain(
-    chain(
-      smallItems,
-      chain(earrings, necklaces)
-    ),
-    diamonds
+    smallItems,
+    chain(earrings, necklaces)
   );
 
   chainRoot(storage, item);
 
   executeChain(
-    buildChain([packDresserTopV2, packTravelRollV2])(storage, item)
+    buildChain([diamondsV2, packDresserTopV2, packTravelRollV2])(storage, item)
   );
 
   return;
