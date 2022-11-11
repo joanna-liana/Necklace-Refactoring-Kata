@@ -4,7 +4,7 @@ import {
   Necklace,
   PendantNecklace,
 } from "./jewellery";
-import { StorageHandler, chain, BreakChain, ContinueChain } from './chainOfResponsibility';
+import { StorageHandler, chain, BreakChain, ContinueChain, StorageHandlerV2, buildChain, executeChain } from './chainOfResponsibility';
 
 
 const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
@@ -68,17 +68,34 @@ const diamonds: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
   return BreakChain;
 }
 
-const packDresserTop = (storage: JewelleryStorage, item: Jewellery) => {
-  storage.dresserTop.push(item);
+const diamondsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
+  shouldExecute: (_storage, item) => {
+    return item.stone !== "Diamond"
+  },
+  exec: () => {
+    storage.safe.push(item);
 
-  return ContinueChain;
-}
+    return BreakChain;
+  }
+})
 
-const packTravelRoll = (storage: JewelleryStorage, item: Jewellery) => {
-  storage.travelRoll = storage.travelRoll.filter((x) => x !== item);
+const packDresserTopV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
+  shouldExecute: () => true,
+  exec: () => {
+    storage.dresserTop.push(item);
 
-  return BreakChain;
-}
+    return ContinueChain;
+  }
+})
+
+const packTravelRollV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
+  shouldExecute: () => true,
+  exec: () => {
+    storage.travelRoll = storage.travelRoll.filter((x) => x !== item);
+
+    return BreakChain;
+  }
+})
 
 // TODO: defactor/refactor to make the CoR focused on item instead of storage
 export function pack(item: Jewellery, storage: JewelleryStorage) {
@@ -87,13 +104,16 @@ export function pack(item: Jewellery, storage: JewelleryStorage) {
       smallItems,
       chain(earrings, necklaces)
     ),
-    chain(
-      diamonds,
-      chain(packDresserTop, packTravelRoll)
-    )
+    diamonds
   );
 
-  return chainRoot(storage, item);
+  chainRoot(storage, item);
+
+  executeChain(
+    buildChain([packDresserTopV2, packTravelRollV2])(storage, item)
+  );
+
+  return;
 }
 
 export function packNecklace(
