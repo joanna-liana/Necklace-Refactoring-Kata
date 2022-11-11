@@ -3,6 +3,7 @@ import {
   JewelleryStorage,
   Necklace,
   PendantNecklace,
+  Earring
 } from "./jewellery";
 import { StorageHandler, chain, BreakChain, ContinueChain, StorageHandlerV2, buildChain, executeChain } from './chainOfResponsibility';
 
@@ -21,42 +22,28 @@ const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) 
   return ContinueChain;
 }
 
-const earrings: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item._kind !== "Earring") {
+const earringsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Earring) => ({
+  shouldExecute: (_storage, item) => {
+    return item._kind === "Earring"
+  },
+  exec: () => {
+    if (item.type === "Hoop") {
+      storage.tree.push(item);
+
+      return BreakChain;
+    }
+
+    if (item.stone === "Plain") {
+      storage.box.mainSection.push(item);
+
+      return BreakChain;
+    }
+
+    storage.box.topShelf.push(item);
+
     return ContinueChain;
   }
-
-  if (item.type === "Hoop") {
-    storage.tree.push(item);
-
-    return BreakChain;
-  }
-
-  if (item.stone === "Plain") {
-    storage.box.mainSection.push(item);
-
-    return BreakChain;
-  }
-
-  storage.box.topShelf.push(item);
-
-  return ContinueChain;
-}
-
-const necklaces: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item._kind !== "Necklace") {
-    return ContinueChain;
-  }
-
-  if (item.type === "Pendant") {
-    storage.box.topShelf.push(item.pendant);
-    storage.tree.push(item.chain);
-  } else {
-    storage.tree.push(item);
-  }
-
-  return ContinueChain;
-}
+});
 
 const necklacesV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Necklace | PendantNecklace) => ({
   shouldExecute: (_storage, item) => {
@@ -103,17 +90,11 @@ const packTravelRollV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jew
   }
 })
 
-// TODO: defactor/refactor to make the CoR focused on item instead of storage
 export function pack(item: Jewellery, storage: JewelleryStorage) {
-  const chainRoot = chain(
-    smallItems,
-    earrings
-  );
-
-  chainRoot(storage, item);
+  smallItems(storage, item);
 
   executeChain(
-    buildChain([necklacesV2, diamondsV2, packDresserTopV2, packTravelRollV2])(storage, item)
+    buildChain([earringsV2, necklacesV2, diamondsV2, packDresserTopV2, packTravelRollV2])(storage, item)
   );
 
   return;
