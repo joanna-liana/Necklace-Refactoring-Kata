@@ -5,22 +5,23 @@ import {
   PendantNecklace,
   Earring
 } from "./jewellery";
-import { StorageHandler, chain, BreakChain, ContinueChain, StorageHandlerV2, buildChain, executeChain } from './chainOfResponsibility';
+import { BreakChain, ContinueChain, StorageHandlerV2, buildChain, executeChain } from './chainOfResponsibility';
 
 
-const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item.size() !== "Small") {
+const smallItemsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
+  shouldExecute: (_storage, item) => {
+    return item.size() === "Small"
+  },
+  exec: () => {
+    storage.box.topShelf.push(item);
+
+    if (storage.travelRoll.includes(item)) {
+      return BreakChain;
+    }
+
     return ContinueChain;
   }
-
-  storage.box.topShelf.push(item);
-
-  if (storage.travelRoll.includes(item)) {
-    return BreakChain;
-  }
-
-  return ContinueChain;
-}
+});
 
 const earringsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Earring) => ({
   shouldExecute: (_storage, item) => {
@@ -91,10 +92,8 @@ const packTravelRollV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jew
 })
 
 export function pack(item: Jewellery, storage: JewelleryStorage) {
-  smallItems(storage, item);
-
   executeChain(
-    buildChain([earringsV2, necklacesV2, diamondsV2, packDresserTopV2, packTravelRollV2])(storage, item)
+    buildChain([smallItemsV2, earringsV2, necklacesV2, diamondsV2, packDresserTopV2, packTravelRollV2])(storage, item)
   );
 
   return;
