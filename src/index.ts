@@ -30,15 +30,13 @@ const earrings: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
     return BreakChain;
   }
 
-  if (item.stone !== "Plain") {
-    storage.box.topShelf.push(item);
-  }
-
   if (item.stone === "Plain") {
     storage.box.mainSection.push(item);
 
     return BreakChain;
   }
+
+  storage.box.topShelf.push(item);
 
   return ContinueChain;
 }
