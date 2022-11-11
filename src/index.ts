@@ -42,6 +42,18 @@ const necklaces: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =
     storage.box.topShelf.push(item.pendant);
   }
 
+  if (item._kind === "Necklace") {
+    if (item.type === "Pendant") {
+      storage.tree.push(item.chain);
+
+      return ContinueChain;
+    } else {
+      storage.tree.push(item);
+
+      return BreakChain;
+    }
+  }
+
   return ContinueChain;
 }
 
@@ -56,19 +68,7 @@ const diamonds: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
 }
 
 const packTree: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item._kind === "Necklace") {
-    if (item.type === "Pendant") {
-      storage.tree.push(item.chain);
 
-      return ContinueChain;
-    } else {
-      storage.tree.push(item);
-
-      return BreakChain;
-    }
-  }
-
-  return ContinueChain;
 }
 
 const packMainSection: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
@@ -95,7 +95,6 @@ const packTravelRoll = (storage: JewelleryStorage, item: Jewellery) => {
 
 // TODO: defactor/refactor to make the CoR focused on item instead of storage
 export function pack(item: Jewellery, storage: JewelleryStorage) {
-  const next4 = ;
   const chainRoot = chain(
     chain(
       smallItems,
