@@ -92,8 +92,20 @@ const packTravelRoll: StorageHandler = (storage: JewelleryStorage, item: Jewelle
 })
 
 export function pack(item: Jewellery, storage: JewelleryStorage) {
+  const itemHandlers = [
+    smallItems,
+    earrings,
+    necklaces,
+    diamonds,
+  ];
+
+  const storageHandlers = [
+    packDresserTop,
+    packTravelRoll
+  ];
+
   executeChain(
-    buildChain([smallItems, earrings, necklaces, diamonds, packDresserTop, packTravelRoll])(storage, item)
+    buildChain([...itemHandlers, ...storageHandlers])(storage, item)
   );
 
   return;
