@@ -34,6 +34,12 @@ const earrings: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
     storage.box.topShelf.push(item);
   }
 
+  if (item.stone === "Plain") {
+    storage.box.mainSection.push(item);
+
+    return BreakChain;
+  }
+
   return ContinueChain;
 }
 
@@ -63,11 +69,7 @@ const diamonds: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
 }
 
 const packMainSection: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item._kind === "Earring" && item.stone === "Plain") {
-    storage.box.mainSection.push(item);
 
-    return BreakChain;
-  }
 
   return ContinueChain;
 }
