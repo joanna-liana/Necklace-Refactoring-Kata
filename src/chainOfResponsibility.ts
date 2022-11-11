@@ -8,12 +8,6 @@ export type ShouldContinueChain = boolean;
 export const ContinueChain = true;
 export const BreakChain = false;
 
-export type StorageHandler = (
-  storage: JewelleryStorage,
-  item: Jewellery
-) => ShouldContinueChain;
-
-
 type StorageHandlerV2Exec = () => ShouldContinueChain;
 
 export type StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => (
@@ -22,17 +16,6 @@ export type StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => (
     exec: StorageHandlerV2Exec
   }
 );
-
-export const chain = (currentHandler: StorageHandler, nextHandler: StorageHandler): StorageHandler => (...args) => {
-  const shouldContinueChain = currentHandler(...args);
-
-  if (shouldContinueChain) {
-    return nextHandler(...args);
-  }
-
-  return shouldContinueChain;
-};
-
 
 type Chain = StorageHandlerV2Exec[];
 
