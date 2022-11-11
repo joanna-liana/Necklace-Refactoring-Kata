@@ -5,10 +5,10 @@ import {
   PendantNecklace,
   Earring
 } from "./jewellery";
-import { BreakChain, ContinueChain, StorageHandlerV2, buildChain, executeChain } from './chainOfResponsibility';
+import { BreakChain, ContinueChain, StorageHandler, buildChain, executeChain } from './chainOfResponsibility';
 
 
-const smallItemsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
+const smallItemsV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: (_storage, item) => {
     return item.size() === "Small"
   },
@@ -23,7 +23,7 @@ const smallItemsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewelle
   }
 });
 
-const earringsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Earring) => ({
+const earringsV2: StorageHandler = (storage: JewelleryStorage, item: Earring) => ({
   shouldExecute: (_storage, item) => {
     return item._kind === "Earring"
   },
@@ -46,7 +46,7 @@ const earringsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Earring) 
   }
 });
 
-const necklacesV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Necklace | PendantNecklace) => ({
+const necklacesV2: StorageHandler = (storage: JewelleryStorage, item: Necklace | PendantNecklace) => ({
   shouldExecute: (_storage, item) => {
     return item._kind === "Necklace"
   },
@@ -62,7 +62,7 @@ const necklacesV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Necklace
   }
 })
 
-const diamondsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
+const diamondsV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: (_storage, item) => {
     return item.stone === "Diamond"
   },
@@ -73,7 +73,7 @@ const diamondsV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery
   }
 })
 
-const packDresserTopV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
+const packDresserTopV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: () => true,
   exec: () => {
     storage.dresserTop.push(item);
@@ -82,7 +82,7 @@ const packDresserTopV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jew
   }
 })
 
-const packTravelRollV2: StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => ({
+const packTravelRollV2: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => ({
   shouldExecute: () => true,
   exec: () => {
     storage.travelRoll = storage.travelRoll.filter((x) => x !== item);

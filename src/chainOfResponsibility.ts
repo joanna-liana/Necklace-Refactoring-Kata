@@ -8,18 +8,18 @@ export type ShouldContinueChain = boolean;
 export const ContinueChain = true;
 export const BreakChain = false;
 
-type StorageHandlerV2Exec = () => ShouldContinueChain;
+type StorageHandlerExec = () => ShouldContinueChain;
 
-export type StorageHandlerV2 = (storage: JewelleryStorage, item: Jewellery) => (
+export type StorageHandler = (storage: JewelleryStorage, item: Jewellery) => (
   {
     shouldExecute: (storage: JewelleryStorage, item: Jewellery) => boolean;
-    exec: StorageHandlerV2Exec
+    exec: StorageHandlerExec
   }
 );
 
-type Chain = StorageHandlerV2Exec[];
+type Chain = StorageHandlerExec[];
 
-export const buildChain = (handlers: StorageHandlerV2[]) => (storage: JewelleryStorage, item: Jewellery): Chain => {
+export const buildChain = (handlers: StorageHandler[]) => (storage: JewelleryStorage, item: Jewellery): Chain => {
   return handlers
     .map(handler => handler(storage, item))
     .filter(({ shouldExecute }) => shouldExecute(storage, item))
