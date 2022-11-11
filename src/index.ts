@@ -65,10 +65,6 @@ const diamonds: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
   return BreakChain;
 }
 
-const packTree: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  return ContinueChain;
-}
-
 const packMainSection: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
   if (item._kind === "Earring" && item.stone === "Plain") {
     storage.box.mainSection.push(item);
@@ -101,11 +97,8 @@ export function pack(item: Jewellery, storage: JewelleryStorage) {
     chain(
       diamonds,
       chain(
-        packTree,
-        chain(
-          packMainSection,
-          chain(packDresserTop, packTravelRoll)
-        )
+        packMainSection,
+        chain(packDresserTop, packTravelRoll)
       )
     )
   );
