@@ -49,8 +49,6 @@ const necklaces: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =
       return ContinueChain;
     } else {
       storage.tree.push(item);
-
-      return BreakChain;
     }
   }
 
