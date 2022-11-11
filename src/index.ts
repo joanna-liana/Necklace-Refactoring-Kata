@@ -11,7 +11,6 @@ const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) 
   if (item.size() === "Small") {
     storage.box.topShelf.push(item);
 
-
     if (storage.travelRoll.includes(item)) {
       return BreakChain;
     }
@@ -21,6 +20,12 @@ const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) 
 }
 
 const earrings: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
+  if (item._kind === "Earring" && item.type === "Hoop") {
+    storage.tree.push(item);
+
+    return BreakChain;
+  }
+
   if (item._kind === "Earring" && item.type !== "Hoop" && item.stone !== "Plain") {
     storage.box.topShelf.push(item);
   }
@@ -47,11 +52,7 @@ const packSafe: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
 }
 
 const packTree: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item._kind === "Earring" && item.type === "Hoop") {
-    storage.tree.push(item);
-
-    return BreakChain;
-  } else if (item._kind === "Necklace") {
+  if (item._kind === "Necklace") {
     if (item.type === "Pendant") {
       storage.tree.push(item.chain);
 
