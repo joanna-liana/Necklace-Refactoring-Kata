@@ -10,6 +10,7 @@ export const necklaces: StorageHandler = (storage: JewelleryStorage, item: Neckl
     return item._kind === "Necklace";
   },
   exec: () => {
+    // TODO: this could be an OR chain
     if (item.type === "Pendant") {
       storage.box.topShelf.push(item.pendant);
       storage.tree.push(item.chain);
