@@ -8,12 +8,14 @@ import { StorageHandler, chain, BreakChain, ContinueChain } from './chainOfRespo
 
 
 const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item.size() === "Small") {
-    storage.box.topShelf.push(item);
+  if (item.size() !== "Small") {
+    return ContinueChain;
+  }
 
-    if (storage.travelRoll.includes(item)) {
-      return BreakChain;
-    }
+  storage.box.topShelf.push(item);
+
+  if (storage.travelRoll.includes(item)) {
+    return BreakChain;
   }
 
   return ContinueChain;
