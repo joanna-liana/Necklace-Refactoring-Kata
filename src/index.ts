@@ -15,17 +15,19 @@ const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) 
   return ContinueChain;
 }
 
+const earrings: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
+  if (item._kind === "Earring" && item.type !== "Hoop" && item.stone !== "Plain") {
+    storage.box.topShelf.push(item);
+  }
+
+  return ContinueChain;
+}
+
 const packTopShelf: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
   if (storage.travelRoll.includes(item) && item.size() !== "Large") {
     storage.box.topShelf.push(item);
 
     return BreakChain;
-  }
-
-  if (item._kind === "Earring" && item.type !== "Hoop" && item.stone !== "Plain") {
-    storage.box.topShelf.push(item);
-
-    return ContinueChain;
   }
 
   if (item._kind === "Necklace" && item.type === "Pendant") {
@@ -95,7 +97,7 @@ export function pack(item: Jewellery, storage: JewelleryStorage) {
   const next3 = chain(packMainSection, next4);
   const next2 = chain(packTree, next3);
   const next1 = chain(packSafe, next2);
-  const chainRoot = chain(chain(smallItems, packTopShelf), next1);
+  const chainRoot = chain(chain(chain(smallItems, earrings), packTopShelf), next1);
 
   return chainRoot(storage, item);
 }
