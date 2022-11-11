@@ -66,7 +66,7 @@ const diamonds: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
 }
 
 const packTree: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-
+  return ContinueChain;
 }
 
 const packMainSection: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
