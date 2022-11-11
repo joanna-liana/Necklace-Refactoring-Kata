@@ -32,7 +32,7 @@ const necklaces: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =
 }
 
 const packTopShelf: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (storage.travelRoll.includes(item) && item.size() !== "Large") {
+  if (storage.travelRoll.includes(item) && item.size() === "Small") {
     storage.box.topShelf.push(item);
 
     return BreakChain;
