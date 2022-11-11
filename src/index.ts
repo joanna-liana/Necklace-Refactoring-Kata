@@ -20,13 +20,17 @@ const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) 
 }
 
 const earrings: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-  if (item._kind === "Earring" && item.type === "Hoop") {
+  if (item._kind !== "Earring") {
+    return ContinueChain;
+  }
+
+  if (item.type === "Hoop") {
     storage.tree.push(item);
 
     return BreakChain;
   }
 
-  if (item._kind === "Earring" && item.type !== "Hoop" && item.stone !== "Plain") {
+  if (item.stone !== "Plain") {
     storage.box.topShelf.push(item);
   }
 
