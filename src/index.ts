@@ -66,12 +66,6 @@ const diamonds: StorageHandler = (storage: JewelleryStorage, item: Jewellery) =>
   return BreakChain;
 }
 
-const packMainSection: StorageHandler = (storage: JewelleryStorage, item: Jewellery) => {
-
-
-  return ContinueChain;
-}
-
 const packDresserTop = (storage: JewelleryStorage, item: Jewellery) => {
   storage.dresserTop.push(item);
 
@@ -93,10 +87,7 @@ export function pack(item: Jewellery, storage: JewelleryStorage) {
     ),
     chain(
       diamonds,
-      chain(
-        packMainSection,
-        chain(packDresserTop, packTravelRoll)
-      )
+      chain(packDresserTop, packTravelRoll)
     )
   );
 
