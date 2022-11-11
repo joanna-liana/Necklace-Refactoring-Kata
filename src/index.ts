@@ -22,7 +22,7 @@ const packTopShelf: StorageHandler = (storage: JewelleryStorage, item: Jewellery
     return BreakChain;
   }
 
-  if (item.size() === "Small" || item._kind === "Earring" && item.type !== "Hoop" && item.stone !== "Plain") {
+  if (item._kind === "Earring" && item.type !== "Hoop" && item.stone !== "Plain") {
     storage.box.topShelf.push(item);
 
     return ContinueChain;
