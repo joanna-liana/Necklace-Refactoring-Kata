@@ -13,8 +13,6 @@ const smallItems: StorageHandler = (storage: JewelleryStorage, item: Jewellery) 
   }
 
   if (storage.travelRoll.includes(item) && item.size() === "Small") {
-    storage.box.topShelf.push(item);
-
     return BreakChain;
   }
 
