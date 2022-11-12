@@ -4,6 +4,7 @@ import {
   PendantNecklace
 } from "../../../jewellery";
 import { ContinueChain, StorageHandler } from '../../../chainOfResponsibility/chainOfResponsibility';
+import { pack } from '../../..';
 
 export const necklaces: StorageHandler = (storage: JewelleryStorage, item: Necklace | PendantNecklace) => ({
   shouldExecute: (_storage, item) => {
@@ -12,8 +13,8 @@ export const necklaces: StorageHandler = (storage: JewelleryStorage, item: Neckl
   exec: () => {
     // TODO: this could be an OR chain
     if (item.type === "Pendant") {
-      storage.box.topShelf.push(item.pendant);
-      storage.tree.push(item.chain);
+      pack(item.pendant, storage);
+      pack(item.chain, storage);
     } else {
       storage.tree.push(item);
     }
