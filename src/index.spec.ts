@@ -181,13 +181,24 @@ describe("The packer", () => {
       })
 
       describe("necklace", () => {
-        it("with a pendant", () => {
-          const item = makePendantNecklace(ANY_STONE, LARGE_TYPE);
+        describe("with a pendant", () => {
+          it("with a regular stone", () => {
+            const item = makePendantNecklace(ANY_STONE, LARGE_TYPE);
 
-          pack(item, storage);
+            pack(item, storage);
 
-          expect(storage.tree[0]).toStrictEqual(item.chain);
-          expect(storage.box.topShelf[0]).toStrictEqual(item.pendant);
+            expect(storage.tree[0]).toStrictEqual(item.chain);
+            expect(storage.box.topShelf[0]).toStrictEqual(item.pendant);
+          })
+
+          it("with a diamond", () => {
+            const item = makePendantNecklace("Diamond", LARGE_TYPE);
+
+            pack(item, storage);
+
+            expect(storage.tree[0]).toStrictEqual(item.chain);
+            expect(storage.safe[0]).toStrictEqual(item.pendant);
+          })
         })
 
         it("without a pendant", () => {
